@@ -1,0 +1,30 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY candidate-backend/requirements.txt ./candidate-backend/
+RUN pip install --no-cache-dir -r candidate-backend/requirements.txt
+
+# Copy shared module first
+COPY shared /app/shared
+
+# Copy candidate-backend
+COPY candidate-backend /app/candidate-backend
+
+# Set Python path
+ENV PYTHONPATH=/app:$PYTHONPATH
+
+WORKDIR /app
+
+# Expose port
+EXPOSE 8001
+
+# Run the application
+CMD ["uvicorn", "candidate-backend.main:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]

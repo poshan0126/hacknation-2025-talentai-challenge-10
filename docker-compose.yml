@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  candidate-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.candidate-backend
+    container_name: talentai-candidate-backend
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=sqlite:////app/data/talentai.db
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./candidate-backend:/app/candidate-backend
+      - ./shared:/app/shared
+      - ./data:/app/data
+    networks:
+      - talentai-network
+    restart: unless-stopped
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: talentai-ngrok
+    command:
+      - "http"
+      - "candidate-backend:8001"
+      - "--domain=${NGROK_DOMAIN}"
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    networks:
+      - talentai-network
+    ports:
+      - "4040:4040"  # Ngrok web interface
+    depends_on:
+      - candidate-backend
+    restart: unless-stopped
+
+networks:
+  talentai-network:
+    driver: bridge
+
+volumes:
+  data:

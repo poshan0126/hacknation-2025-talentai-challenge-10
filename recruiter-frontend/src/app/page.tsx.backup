@@ -1,0 +1,277 @@
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Zap,
+  Users,
+  Crown,
+  ArrowRight,
+  Sparkles,
+  Building2,
+  Search,
+  FileText,
+  Target,
+  BarChart,
+} from "lucide-react";
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Top bar */}
+      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
+          <div className="flex items-center gap-2">
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white shadow-sm">
+              <Zap className="h-4 w-4" />
+            </div>
+            <span className="text-base font-semibold tracking-tight text-gray-900">
+              TalentAI Recruiter
+            </span>
+          </div>
+
+          <div className="hidden gap-2 sm:flex">
+            <Link href="/recruiter">
+              <Button variant="ghost" className="rounded-lg hover:bg-gray-100">
+                Dashboard
+              </Button>
+            </Link>
+            <Link href="/recrutranking">
+              <Button variant="ghost" className="rounded-lg hover:bg-gray-100">
+                Rankings
+              </Button>
+            </Link>
+            <Link href="/recruiterprofile">
+              <Button variant="ghost" className="rounded-lg hover:bg-gray-100">
+                Profile
+              </Button>
+            </Link>
+          </div>
+
+          <Link href="/recruiter">
+            <Button className="rounded-lg bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white hover:opacity-90 transition-opacity">
+              Enter Dashboard
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute left-1/2 top-[-120px] h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-gradient-to-r from-[#667eea]/20 to-[#764ba2]/20 blur-3xl" />
+        </div>
+
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 py-14 md:grid-cols-2 md:px-6 lg:py-20">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#667eea]/20 bg-white px-3 py-1 text-xs font-medium text-[#667eea] shadow-sm">
+              <Sparkles className="h-3.5 w-3.5" />
+              AI-Powered Recruitment • Smart Matching • Analytics
+            </div>
+
+            <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              <span className="bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent">
+                Find the perfect talent.
+              </span>{" "}
+              Faster. Smarter. Better.
+            </h1>
+
+            <p className="mt-4 max-w-xl text-pretty text-gray-600 md:text-lg">
+              TalentAI empowers recruiters with intelligent talent matching, automated screening, 
+              and comprehensive analytics to make better hiring decisions.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/recruiter">
+                <Button className="h-11 rounded-xl bg-gradient-to-r from-[#667eea] to-[#764ba2] px-5 text-white hover:opacity-90 transition-opacity">
+                  Access Recruiter Dashboard
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/recruiterprofile">
+                <Button variant="outline" className="h-11 rounded-xl border-gray-300 px-5 hover:bg-gray-50">
+                  Setup Your Profile
+                </Button>
+              </Link>
+            </div>
+
+            {/* Stats */}
+            <div className="mt-8 grid grid-cols-3 gap-4 max-w-lg">
+              {[
+                { k: "842", v: "Active Recruiters" },
+                { k: "15K+", v: "Successful Hires" },
+                { k: "72%", v: "Time Saved" },
+              ].map((s) => (
+                <div key={s.v} className="rounded-xl border border-gray-200 bg-white p-4 text-center shadow-sm">
+                  <div className="text-xl font-bold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent">
+                    {s.k}
+                  </div>
+                  <div className="text-xs font-medium text-gray-500">{s.v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Visual / Illustration */}
+          <div className="relative mx-auto w-full max-w-xl">
+            <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-xl backdrop-blur-sm">
+              <div className="grid grid-cols-2 gap-3">
+                <Card className="overflow-hidden border-gray-200 bg-white">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-[#667eea]" />
+                      <p className="text-sm font-semibold text-gray-800">Top Companies</p>
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      {["TechCorp", "StartupHub", "Global Ltd"].map((n, i) => (
+                        <div key={n} className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            <span className="grid h-6 w-6 place-items-center rounded-md bg-gradient-to-br from-[#667eea]/10 to-[#764ba2]/10 text-[#667eea] text-xs font-bold">
+                              {i + 1}
+                            </span>
+                            <span className="text-sm font-medium text-gray-700">{n}</span>
+                          </div>
+                          <span className="text-sm font-semibold text-emerald-600">{96 - i * 2}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden border-gray-200 bg-white">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2">
+                      <Crown className="h-4 w-4 text-[#764ba2]" />
+                      <p className="text-sm font-semibold text-gray-800">Top Recruiters</p>
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      {["Sarah J.", "Mike D.", "Emma L."].map((n, i) => (
+                        <div key={n} className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
+                          <span className="text-sm font-medium text-gray-700">{n}</span>
+                          <span className="text-sm font-semibold bg-gradient-to-r from-[#667eea] to-[#764ba2] bg-clip-text text-transparent">
+                            {890 - i * 11}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="col-span-2 overflow-hidden border-gray-200 bg-gradient-to-br from-gray-50 to-white">
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Target className="h-4 w-4 text-pink-600" />
+                        <p className="text-sm font-semibold text-gray-800">Active Job Postings</p>
+                      </div>
+                      <Link href="/recruiter" className="text-xs font-medium text-[#667eea] hover:text-[#764ba2] transition-colors">
+                        Manage
+                      </Link>
+                    </div>
+                    <div className="mt-3 grid grid-cols-1 gap-2">
+                      {[
+                        { t: "Senior Full Stack Engineer", d: "47 applicants" },
+                        { t: "Product Manager", d: "32 applicants" },
+                        { t: "Data Scientist", d: "28 applicants" },
+                        { t: "DevOps Engineer", d: "21 applicants" },
+                      ].map((c) => (
+                        <div key={c.t} className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2">
+                          <span className="text-sm font-medium text-gray-700">{c.t}</span>
+                          <span className="text-xs font-medium text-gray-500">{c.d}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="mx-auto max-w-7xl px-4 pb-14 md:px-6 lg:pb-20">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <Link href="/recruiter" className="group">
+            <Card className="h-full overflow-hidden border-gray-200 bg-white transition-all hover:shadow-lg hover:-translate-y-1">
+              <CardContent className="p-6">
+                <div className="rounded-xl bg-gradient-to-br from-[#667eea]/10 to-[#764ba2]/10 p-3 w-fit mb-4">
+                  <Search className="h-6 w-6 text-[#667eea]" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  AI-Powered Talent Discovery
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Find the perfect match with intelligent search and filtering capabilities.
+                </p>
+                <div className="inline-flex items-center text-sm font-medium text-[#667eea] group-hover:text-[#764ba2] transition-colors">
+                  Start searching <ArrowRight className="ml-1 h-4 w-4" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/recruiter" className="group">
+            <Card className="h-full overflow-hidden border-gray-200 bg-white transition-all hover:shadow-lg hover:-translate-y-1">
+              <CardContent className="p-6">
+                <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 p-3 w-fit mb-4">
+                  <FileText className="h-6 w-6 text-emerald-600" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Streamlined Job Management
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Create, manage, and track job postings with automated applicant screening.
+                </p>
+                <div className="inline-flex items-center text-sm font-medium text-emerald-600 group-hover:text-emerald-700 transition-colors">
+                  Manage jobs <ArrowRight className="ml-1 h-4 w-4" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/recrutranking" className="group">
+            <Card className="h-full overflow-hidden border-gray-200 bg-white transition-all hover:shadow-lg hover:-translate-y-1">
+              <CardContent className="p-6">
+                <div className="rounded-xl bg-gradient-to-br from-[#764ba2]/10 to-purple-600/10 p-3 w-fit mb-4">
+                  <BarChart className="h-6 w-6 text-[#764ba2]" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Performance Insights
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Track your recruitment metrics and optimize your hiring process.
+                </p>
+                <div className="inline-flex items-center text-sm font-medium text-[#764ba2] group-hover:text-purple-700 transition-colors">
+                  View analytics <ArrowRight className="ml-1 h-4 w-4" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 md:flex-row md:px-6">
+          <p className="text-xs text-gray-500">
+            © {new Date().getFullYear()} TalentAI Recruiter Platform. All rights reserved.
+          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/recruiter" className="text-xs font-medium text-gray-600 hover:text-[#667eea] transition-colors">
+              Dashboard
+            </Link>
+            <Link href="/recrutranking" className="text-xs font-medium text-gray-600 hover:text-[#667eea] transition-colors">
+              Rankings
+            </Link>
+            <Link href="/recruiterprofile" className="text-xs font-medium text-gray-600 hover:text-[#667eea] transition-colors">
+              Profile
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
