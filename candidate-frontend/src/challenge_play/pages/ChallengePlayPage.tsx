@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
 
 interface Challenge {
   id: string;
@@ -35,6 +36,7 @@ interface SubmissionResult {
 const ChallengePlayPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentUser } = useUser();
   const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(null);
   const [bugAnalysis, setBugAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +54,24 @@ const ChallengePlayPage: React.FC = () => {
     }
   }, [location.state, navigate]);
 
+  // Check if user is loaded
+  if (!currentUser) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundColor: '#f9fafb',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+          <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
+
   const submitAnalysis = async () => {
     if (!currentChallenge || !bugAnalysis.trim()) {
       setAlertMessage('Please analyze the code and describe the bugs you found!');
@@ -68,9 +88,8 @@ const ChallengePlayPage: React.FC = () => {
         },
         body: JSON.stringify({
           challenge_id: currentChallenge.id,
-          bug_analysis: bugAnalysis,
-          expected_bugs: currentChallenge.expected_bugs,
-          candidate_id: localStorage.getItem('candidateId') || undefined
+          user_id: currentUser?.user_id || '',
+          analysis: bugAnalysis  // Updated field name to match backend
         })
       });
       
@@ -135,8 +154,7 @@ const ChallengePlayPage: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          difficulty: 'easy',
-          language: 'python'
+          user_id: currentUser?.user_id || ''
         })
       });
       

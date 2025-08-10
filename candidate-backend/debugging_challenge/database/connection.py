@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./talentai.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///../../data/talentai.db")
 
 engine = create_engine(
     DATABASE_URL,

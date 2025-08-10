@@ -5,7 +5,7 @@ from datetime import datetime
 import uuid
 
 from ..database.connection import get_db
-from ..database.models import SubmissionDB, ChallengeDB, CandidateDB
+from ..database.models import SubmissionDB, ChallengeDB, CandidateDB, UserChallengeDB
 from ..models.submission import (
     SubmissionCreate, SubmissionResponse, DetailedSubmissionResponse,
     SubmissionStatus, LeaderboardResponse, LeaderboardEntry
@@ -25,34 +25,50 @@ async def evaluate_submission_background(submission_id: str, expected_bugs_data:
     
     try:
         submission = db_session.query(SubmissionDB).filter(SubmissionDB.id == submission_id).first()
-        challenge = db_session.query(ChallengeDB).filter(ChallengeDB.id == submission.challenge_id).first()
         
         if not submission:
             print(f"No submission found for ID: {submission_id}")
             return
+            
+        # Get the user challenge that this submission belongs to
+        user_challenge = db_session.query(UserChallengeDB).filter(
+            UserChallengeDB.id == submission.user_challenge_id
+        ).first()
         
-        print(f"Found submission with challenge_id: {submission.challenge_id}")
-        print(f"Challenge found: {challenge is not None}")
+        if not user_challenge:
+            print(f"No user challenge found for submission {submission_id}")
+            return
+        
+        # For stored challenges, get the original challenge
+        challenge = None
+        if user_challenge.challenge_id:
+            challenge = db_session.query(ChallengeDB).filter(
+                ChallengeDB.id == user_challenge.challenge_id
+            ).first()
+        
+        print(f"Found submission for user challenge: {user_challenge.id}")
+        print(f"Original challenge found: {challenge is not None}")
         
         submission.status = SubmissionStatus.EVALUATING.value
         db_session.commit()
         
         evaluator = CommentEvaluator()
         
-        # Use provided expected bugs (for random challenges) or challenge bugs (for stored challenges)
-        if expected_bugs_data:
+        # Use expected bugs from user challenge
+        if user_challenge.expected_bugs:
+            print(f"Using user challenge expected bugs: {len(user_challenge.expected_bugs)} bugs")
+            expected_bugs = [Bug(**bug_data) for bug_data in user_challenge.expected_bugs]
+            language = user_challenge.language
+        elif expected_bugs_data:
             print(f"Using provided expected bugs: {len(expected_bugs_data)} bugs")
             expected_bugs = [Bug(**bug_data) for bug_data in expected_bugs_data]
             language = "python"  # Default for random challenges
-        elif challenge:
-            print(f"Using challenge expected bugs: {len(challenge.expected_bugs)} bugs")
+        elif challenge and challenge.expected_bugs:
+            print(f"Using original challenge expected bugs: {len(challenge.expected_bugs)} bugs")
             expected_bugs = [Bug(**bug_data) for bug_data in challenge.expected_bugs]
             language = challenge.language
         else:
             print(f"Error: No expected bugs found for submission {submission_id}")
-            print(f"expected_bugs_data: {expected_bugs_data}")
-            print(f"challenge: {challenge}")
-
             # As a safety net, treat it as a no-bugs trick challenge
             from ..models.challenge import BugType
             expected_bugs = [Bug(line_number=0, bug_type=BugType.LOGIC_ERROR, description="No bugs found - this code is correct")]
@@ -87,23 +103,47 @@ async def evaluate_submission_background(submission_id: str, expected_bugs_data:
         submission.status = SubmissionStatus.COMPLETED.value
         submission.evaluated_at = datetime.utcnow()
         
+        # Update user challenge statistics
+        user_challenge.attempts += 1
+        if submission.score > user_challenge.best_score:
+            user_challenge.best_score = submission.score
+        # Mark as completed after first attempt (can retry for better score)
+        if user_challenge.attempts >= 1:
+            user_challenge.completed = True
+            if not user_challenge.completed_at:
+                user_challenge.completed_at = datetime.utcnow()
+        user_challenge.last_attempted = datetime.utcnow()
+        
+        # Update candidate statistics
         candidate = db_session.query(CandidateDB).filter(
-            CandidateDB.anonymous_id == submission.candidate_id
+            CandidateDB.id == submission.candidate_id
         ).first()
         
         if candidate:
-            candidate.total_score += submission.score
-            candidate.challenges_completed += 1
+            # Update candidate statistics
             candidate.total_bugs_found += submission.bugs_found
+            candidate.total_bugs_missed += submission.bugs_missed
             
-            all_submissions = db_session.query(SubmissionDB).filter(
-                SubmissionDB.candidate_id == submission.candidate_id,
-                SubmissionDB.status == SubmissionStatus.COMPLETED.value
+            # Recalculate statistics based on all user challenges
+            all_challenges = db_session.query(UserChallengeDB).filter(
+                UserChallengeDB.candidate_id == candidate.id
             ).all()
             
-            if all_submissions:
-                avg_accuracy = sum(s.accuracy_rate for s in all_submissions) / len(all_submissions)
-                candidate.average_accuracy = avg_accuracy
+            completed_challenges = [c for c in all_challenges if c.completed]
+            attempted_challenges = [c for c in all_challenges if c.attempts > 0]
+            
+            candidate.challenges_completed = len(completed_challenges)
+            candidate.challenges_attempted = len(attempted_challenges)
+            
+            if attempted_challenges:
+                total_score = sum(c.best_score for c in attempted_challenges)
+                candidate.total_score = total_score
+                candidate.average_score = total_score / len(attempted_challenges)
+                
+                if all_challenges[0].attempts > 0:  # Update highest score if needed
+                    highest = max(c.best_score for c in attempted_challenges)
+                    if highest > candidate.highest_score:
+                        candidate.highest_score = highest
             
             candidate.last_active = datetime.utcnow()
         
@@ -132,46 +172,51 @@ async def submit_solution(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
-    # For random challenges, challenge might not exist in database
-    challenge = db.query(ChallengeDB).filter(ChallengeDB.id == submission.challenge_id).first()
-    is_random_challenge = submission.challenge_id.startswith("random-")
+    # Get the candidate by user_id
+    candidate = db.query(CandidateDB).filter(
+        CandidateDB.user_id == submission.user_id
+    ).first()
     
-    if not challenge and not is_random_challenge:
-        raise HTTPException(status_code=404, detail="Challenge not found")
-    
-    candidate_id = submission.candidate_id or f"anon_{uuid.uuid4().hex[:8]}"
-    
-    candidate = db.query(CandidateDB).filter(CandidateDB.anonymous_id == candidate_id).first()
     if not candidate:
-        candidate = CandidateDB(
-            anonymous_id=candidate_id,
-            display_name=f"Debugger_{candidate_id[-4:]}"
-        )
-        db.add(candidate)
-        db.commit()
+        raise HTTPException(status_code=404, detail=f"User {submission.user_id} not found")
     
-    # Use bug_analysis (new format) or annotated_code (old format)
-    analysis_text = submission.bug_analysis or submission.annotated_code
+    # Find the user's challenge for this challenge_id
+    user_challenge = db.query(UserChallengeDB).filter(
+        UserChallengeDB.id == submission.challenge_id,
+        UserChallengeDB.user_id == submission.user_id
+    ).first()
     
+    if not user_challenge:
+        raise HTTPException(status_code=404, detail="Challenge not found for this user")
+    
+    # Use analysis field from frontend
+    analysis_text = submission.analysis or submission.bug_analysis or submission.annotated_code
+    
+    if not analysis_text:
+        raise HTTPException(status_code=400, detail="No analysis provided")
+    
+    # Create submission linked to user challenge
     db_submission = SubmissionDB(
-        challenge_id=submission.challenge_id,
-        candidate_id=candidate_id,
+        user_challenge_id=user_challenge.id,
+        candidate_id=candidate.id,
+        user_id=submission.user_id,
         annotated_code=analysis_text,
-        status=SubmissionStatus.PENDING.value
+        status=SubmissionStatus.PENDING.value,
+        submitted_at=datetime.utcnow()
     )
     
     db.add(db_submission)
     db.commit()
     db.refresh(db_submission)
     
-    # Pass expected bugs for random challenges
-    expected_bugs = submission.expected_bugs if is_random_challenge else None
-    print(f"Debug - is_random_challenge: {is_random_challenge}, expected_bugs: {expected_bugs}")
+    # Pass expected bugs if provided (for backward compatibility)
+    expected_bugs = submission.expected_bugs
+    print(f"Debug - user_challenge_id: {user_challenge.id}, expected_bugs: {expected_bugs}")
     background_tasks.add_task(evaluate_submission_background, db_submission.id, expected_bugs)
     
     return SubmissionResponse(
         id=db_submission.id,
-        challenge_id=db_submission.challenge_id,
+        challenge_id=user_challenge.id,  # Return user challenge ID
         score=0,
         accuracy_rate=0,
         bugs_found=0,
@@ -191,7 +236,7 @@ async def get_submission(submission_id: str, db: Session = Depends(get_db)):
     
     return DetailedSubmissionResponse(
         id=submission.id,
-        challenge_id=submission.challenge_id,
+        challenge_id=submission.user_challenge_id,  # Return user challenge ID
         score=submission.score,
         accuracy_rate=submission.accuracy_rate,
         bugs_found=submission.bugs_found,

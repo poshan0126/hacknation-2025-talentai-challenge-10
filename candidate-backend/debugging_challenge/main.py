@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-from .api import challenges, submissions
+from .api import challenges, submissions, users
 from .database.connection import init_db
 
 @asynccontextmanager
@@ -18,6 +18,7 @@ app = FastAPI(
 
 app.include_router(challenges.router)
 app.include_router(submissions.router)
+app.include_router(users.router)
 
 @app.get("/")
 async def debug_root():

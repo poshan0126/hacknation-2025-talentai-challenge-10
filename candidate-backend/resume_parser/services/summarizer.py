@@ -23,8 +23,8 @@ import logging
 from typing import Optional, Dict, Any
 from abc import ABC, abstractmethod
 
-from config import config
-from models import ResumeStruct, SummaryRequest
+from resume_parser.config import config
+from resume_parser.models.resume import ResumeStruct, SummaryRequest
 
 # Configure logging for this module
 logger = logging.getLogger(__name__)
@@ -478,7 +478,7 @@ class LLMSummarizer:
         
         # Auto-select provider based on configuration
         try:
-            from config import config
+            from resume_parser.config import config
             preferred_provider = config.provider
             
             # Try to use the preferred provider if it's available
@@ -547,6 +547,36 @@ class LLMSummarizer:
                 return name
         
         return "unknown"
+    
+    def get_current_model_name(self) -> str:
+        """
+        Get the name of the current model being used.
+        
+        Returns:
+            Name of the current model, or 'unknown' if not set
+        """
+        provider_name = self.get_current_provider_name()
+        if provider_name == "groq":
+            return config.groq_model if hasattr(config, 'groq_model') else "unknown"
+        elif provider_name == "local":
+            return config.local_model_path if hasattr(config, 'local_model_path') else "local"
+        return "unknown"
+    
+    def get_model_for_provider(self, provider_name: str) -> Optional[str]:
+        """
+        Get the model name for a specific provider.
+        
+        Args:
+            provider_name: Name of the provider
+            
+        Returns:
+            Model name or None if provider doesn't exist
+        """
+        if provider_name == "groq":
+            return config.groq_model if hasattr(config, 'groq_model') else None
+        elif provider_name == "local":
+            return config.local_model_path if hasattr(config, 'local_model_path') else "local"
+        return None
     
     def summarize(self, request: SummaryRequest) -> str:
         """

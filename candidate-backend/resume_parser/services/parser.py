@@ -1,6 +1,6 @@
 """
 Resume parser module for extracting structured data from resume files.
-Supports markdown and text formats that follow the provided sample layout.
+Supports PDF, markdown and text formats that follow the provided sample layout.
 """
 
 import re
@@ -9,7 +9,9 @@ from pathlib import Path
 from typing import Optional, List, Dict
 from datetime import datetime
 
-from models import ResumeStruct, Education, Experience
+from resume_parser.models.resume import ResumeStruct, Education, Experience
+from .pdf_parser import pdf_to_markdown
+from .llm_extractor import extract_with_llm
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +48,16 @@ class ResumeParser:
 
     def parse_file(self, file_path: Path) -> ResumeStruct:
         try:
-            content = file_path.read_text(encoding="utf-8")
+            # Check file extension
+            file_ext = file_path.suffix.lower()
+            
+            if file_ext == '.pdf':
+                # Convert PDF to markdown first
+                content = pdf_to_markdown(file_path)
+            else:
+                # Read text/markdown files directly
+                content = file_path.read_text(encoding="utf-8")
+                
             return self.parse_content(content)
         except Exception as e:
             logger.error(f"Failed to parse file {file_path}: {e}")
@@ -54,6 +65,58 @@ class ResumeParser:
 
     def parse_markdown(self, content: str) -> ResumeStruct:
         return self.parse_content(content)
+    
+    def parse_pdf(self, pdf_path: Path) -> ResumeStruct:
+        """Parse a PDF file by converting it to markdown first."""
+        try:
+            markdown_content = pdf_to_markdown(pdf_path)
+            result = self.parse_content(markdown_content)
+            
+            # Check if basic parsing extracted meaningful data
+            has_education = result.education and len(result.education) > 0 and result.education[0].institution
+            has_experience = result.experience and len(result.experience) > 0 and result.experience[0].company
+            has_skills = result.skills and len(result.skills) > 0
+            
+            # If basic parsing didn't extract enough structured data, use LLM
+            if not (has_education or has_experience or has_skills):
+                logger.info(f"Basic parsing incomplete for {pdf_path}, using LLM extraction")
+                result = extract_with_llm(markdown_content)
+                
+                # If LLM also couldn't extract much, try with raw PDF text
+                if not (result.education or result.experience or result.skills):
+                    logger.info(f"Retrying LLM extraction with raw PDF text for {pdf_path}")
+                    # Get raw text without markdown conversion for better LLM processing
+                    raw_text = self._get_raw_pdf_text(pdf_path)
+                    if raw_text:
+                        result = extract_with_llm(raw_text)
+            
+            return result
+        except Exception as e:
+            logger.error(f"Failed to parse PDF {pdf_path}: {e}")
+            raise RuntimeError(f"Failed to parse PDF file: {e}")
+    
+    def _get_raw_pdf_text(self, pdf_path: Path) -> str:
+        """Extract raw text from PDF without markdown formatting."""
+        try:
+            import pymupdf
+            doc = pymupdf.open(str(pdf_path))
+            text_parts = []
+            for page in doc:
+                text_parts.append(page.get_text())
+            doc.close()
+            return '\n'.join(text_parts)
+        except:
+            try:
+                import pdfplumber
+                with pdfplumber.open(str(pdf_path)) as pdf:
+                    text_parts = []
+                    for page in pdf.pages:
+                        text = page.extract_text()
+                        if text:
+                            text_parts.append(text)
+                    return '\n'.join(text_parts)
+            except:
+                return ""
 
     def parse_content(self, content: str) -> ResumeStruct:
         lines = content.splitlines()

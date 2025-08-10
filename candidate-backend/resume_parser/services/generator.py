@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 from typing import List, Dict
 
-from models import ResumeStruct, Education, Experience
+from resume_parser.models.resume import ResumeStruct, Education, Experience
 
 logger = logging.getLogger(__name__)
 

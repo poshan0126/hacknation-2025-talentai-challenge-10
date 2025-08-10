@@ -18,9 +18,11 @@ class BugIdentification(BaseModel):
 
 class SubmissionCreate(BaseModel):
     challenge_id: str
+    user_id: str  # User ID from frontend
+    analysis: Optional[str] = None  # Analysis text from frontend
     annotated_code: Optional[str] = None  # For old format
     bug_analysis: Optional[str] = None    # For new plain text analysis format
-    candidate_id: Optional[str] = None
+    candidate_id: Optional[str] = None  # Deprecated, kept for compatibility
     expected_bugs: Optional[List[Dict]] = None  # Pass expected bugs for grading
 
 class Submission(BaseModel):

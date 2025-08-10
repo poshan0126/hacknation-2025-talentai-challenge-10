@@ -31,26 +31,47 @@ Available bug types:
 """
 
 REACT_BUG_GENERATOR_PROMPT = """
-Language: {language}
-Difficulty: {difficulty}
-Number of bugs: {num_bugs}
-Bug types: {bug_types}
-Clean code (if provided): {clean_code}
+Clean Code to Debug:
+```{language}
+{clean_code}
+```
 
-Generate a simple Python function with exactly {num_bugs} bugs.
+Parameters:
+- Language: {language}
+- Difficulty: {difficulty}
+- Number of bugs to introduce: {num_bugs}
+- Focus on bug types: {bug_types}
 
-Your final answer MUST be ONLY valid JSON with this structure:
+Use ReAct framework to generate buggy code:
+
+Thought: Let me analyze this {language} code and plan what types of {difficulty} level bugs to introduce. I need to add {num_bugs} bugs focusing on {bug_types}.
+
+[Analyze the code structure, identify good locations for bugs, and plan the bug injection strategy]
+
+Action: I'll introduce the following bugs:
+1. [Bug type and location with reasoning]
+2. [Bug type and location with reasoning]
+...
+
+Observation: Let me review the buggy code to ensure:
+- Bugs are realistic and educational
+- Difficulty level is appropriate
+- Code remains readable
+- Each bug tests different debugging skills
+
+Return your response as valid JSON:
 {{
-    "buggy_code": "def function_name():\\n    # Complete runnable Python code with bugs",
+    "buggy_code": "complete code with bugs injected",
     "bugs": [
         {{
-            "line_number": 2,
-            "bug_type": "logic_error",
-            "description": "Description of the bug",
-            "hint": "Hint for finding it"
+            "line_number": <int>,
+            "bug_type": "<bug_type>",
+            "description": "Clear description of the bug",
+            "hint": "Educational hint for learners",
+            "reasoning": "Why this bug was introduced"
         }}
-    ]
+    ],
+    "difficulty_analysis": "Explanation of why this matches {difficulty} difficulty",
+    "educational_value": "What debugging skills this teaches"
 }}
 """
-
-# REMOVED: Static patterns should not be used - everything must be dynamic via ReAct agents

@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../../contexts/UserContext';
 
 const ChallengeCard: React.FC = () => {
   const navigate = useNavigate();
+  const { currentUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const startChallenge = async () => {
+    if (!currentUser) {
+      setAlertMessage('User not loaded yet. Please try again.');
+      return;
+    }
+
     setIsLoading(true);
     
     try {
@@ -16,8 +23,7 @@ const ChallengeCard: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          difficulty: 'easy',
-          language: 'python'
+          user_id: currentUser.user_id
         })
       });
       

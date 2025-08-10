@@ -46,6 +46,24 @@ class ResumeStruct:
         """Convert to JSON string."""
         return json.dumps(self.to_dict(), indent=2)
 
+from pydantic import BaseModel
+
+class ParseRequest(BaseModel):
+    """Request model for resume parsing."""
+    content: str
+    filename: Optional[str] = None
+    max_length: int = 200
+    tone: str = "professional"
+    focus_areas: Optional[List[str]] = None
+    llm_provider: Optional[str] = None
+
+class ParseResponse(BaseModel):
+    """Response model for resume parsing."""
+    success: bool
+    data: Optional['ParsedResume'] = None
+    error: Optional[str] = None
+    processing_time: float
+
 @dataclass
 class ParsedResume:
     """Parsed resume with metadata."""

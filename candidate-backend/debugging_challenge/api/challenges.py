@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
+from datetime import datetime
 
 from ..database.connection import get_db
 from ..database.models import ChallengeDB
@@ -72,6 +73,93 @@ async def get_challenge(challenge_id: str, db: Session = Depends(get_db)):
         tags=challenge.tags or [],
         expected_bugs=[]  # Don't expose expected bugs
     )
+
+class TakeChallengeRequest(BaseModel):
+    user_id: str
+
+@router.post("/take-challenge", response_model=ChallengeResponse)
+async def take_challenge(
+    request: TakeChallengeRequest,
+    db: Session = Depends(get_db)
+):
+    """Generate a new challenge dynamically for a specific user"""
+    from ..services.user_service import UserService
+    from ..database.models import UserChallengeDB
+    
+    # Verify user exists
+    user = UserService.get_user_by_id(db, request.user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User {request.user_id} not found")
+    
+    # Randomly select difficulty and bug types
+    difficulty = random.choice(list(DifficultyLevel))
+    num_bugs = random.randint(2, 4) if difficulty != DifficultyLevel.EASY else random.randint(1, 2)
+    available_bug_types = list(BugType)
+    selected_bug_types = random.sample(available_bug_types, min(num_bugs, len(available_bug_types)))
+    
+    generator = BugGenerator()
+    
+    try:
+        # Generate challenge without clean code (AI will create from scratch)
+        buggy_code, bugs = generator.generate_bugs(
+            clean_code=None,  # Let AI generate code from scratch
+            language=ProgrammingLanguage.PYTHON.value,
+            difficulty=difficulty,
+            num_bugs=num_bugs,
+            bug_types=selected_bug_types
+        )
+        
+        # Create challenge object
+        title = f"Debug Challenge - {difficulty.value.title()}"
+        description = f"Find and fix {num_bugs} bugs in this {difficulty.value} level challenge"
+        
+        # Save expected bugs
+        expected_bugs_json = [
+            {
+                "line_number": bug.line_number,
+                "bug_type": bug.bug_type.value,
+                "description": bug.description,
+                "hint": bug.hint
+            }
+            for bug in bugs
+        ]
+        
+        # Create user-specific challenge record
+        user_challenge = UserChallengeDB(
+            candidate_id=user.id,
+            user_id=request.user_id,
+            title=title,
+            description=description,
+            buggy_code=buggy_code,
+            language=ProgrammingLanguage.PYTHON.value,
+            difficulty=difficulty.value,
+            expected_bugs=expected_bugs_json,
+            max_score=100,
+            time_limit_minutes=30
+        )
+        db.add(user_challenge)
+        db.commit()
+        db.refresh(user_challenge)
+        
+        # Update user's attempted challenges count
+        user.challenges_attempted = (user.challenges_attempted or 0) + 1
+        user.last_active = datetime.utcnow()
+        db.commit()
+        
+        return ChallengeResponse(
+            id=user_challenge.id,
+            title=user_challenge.title,
+            description=user_challenge.description,
+            buggy_code=user_challenge.buggy_code,
+            language=user_challenge.language,
+            difficulty=user_challenge.difficulty,
+            max_score=user_challenge.max_score,
+            time_limit_minutes=user_challenge.time_limit_minutes,
+            tags=["generated", "dynamic", f"user:{request.user_id}"],
+            expected_bugs=[]  # Don't expose expected bugs to frontend
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate challenge: {str(e)}")
 
 @router.post("/generate", response_model=ChallengeResponse)
 async def generate_challenge(
@@ -156,85 +244,3 @@ async def get_hints(challenge_id: str, db: Session = Depends(get_db)):
 class RandomChallengeRequest(BaseModel):
     difficulty: Optional[DifficultyLevel] = DifficultyLevel.EASY
     language: Optional[ProgrammingLanguage] = ProgrammingLanguage.PYTHON
-
-
-@router.post("/take-challenge", response_model=ChallengeResponse)
-async def take_random_challenge(
-    request: Optional[RandomChallengeRequest] = None,
-    difficulty: Optional[DifficultyLevel] = DifficultyLevel.EASY,
-    language: Optional[ProgrammingLanguage] = ProgrammingLanguage.PYTHON,
-):
-    """Generate a random challenge dynamically"""
-    
-    generator = BugGenerator()
-    
-    try:
-        selected_difficulty = (request.difficulty if request else None) or difficulty or DifficultyLevel.EASY
-        selected_language = (request.language if request else None) or language or ProgrammingLanguage.PYTHON
-        
-        # Select random bug types based on difficulty
-        all_bug_types = list(BugType)
-        if selected_difficulty == DifficultyLevel.EASY:
-            possible_bug_types = [BugType.LOGIC_ERROR, BugType.OFF_BY_ONE, BugType.SYNTAX_ERROR]
-        elif selected_difficulty == DifficultyLevel.MEDIUM:
-            possible_bug_types = [BugType.LOGIC_ERROR, BugType.RUNTIME_ERROR, BugType.TYPE_ERROR, BugType.OFF_BY_ONE]
-        else:  # HARD
-            possible_bug_types = all_bug_types
-        
-        # Randomly select 2-4 bug types
-        num_bugs = random.randint(2, min(4, len(possible_bug_types)))
-        selected_bug_types = random.sample(possible_bug_types, min(num_bugs, len(possible_bug_types)))
-        
-        # Generate buggy code directly (agent will create both code and bugs)
-        print(f"Generating buggy code with {num_bugs} bugs...")
-        
-        buggy_code, bugs = generator.generate_bugs(
-            clean_code=None,  # Let agent generate its own code
-            language=selected_language.value.lower(),
-            difficulty=selected_difficulty,
-            num_bugs=num_bugs,
-            bug_types=selected_bug_types
-        )
-
-        # Guarantee at least one expected bug (or explicit no-bugs sentinel)
-        if not bugs:
-            # Bug and BugType are already imported at the top
-            bugs = [
-                Bug(
-                    line_number=0,
-                    bug_type=BugType.LOGIC_ERROR,
-                    description="No bugs found - this code is correct",
-                    hint="This is a trick: there are no bugs."
-                )
-            ]
-        
-        print(f"Bug generation result: {len(bugs)} bugs created")
-        for i, bug in enumerate(bugs):
-            print(f"  Bug {i+1}: Line {bug.line_number} - {bug.description}")
-        
-        # Create challenge title based on content
-        code_type = "Algorithm" if "binary_search" in buggy_code or "find_maximum" in buggy_code else \
-                   "Function" if "function" in buggy_code or "def " in buggy_code else "Code"
-        
-        challenge_title = f"{selected_difficulty.value.title()} {selected_language.value} {code_type} Debugging"
-        challenge_description = f"Find and identify all bugs in this {selected_language.value.lower()} code. Analyze the code carefully and describe each bug you find."
-        
-        # Store bugs info for grading (in a real app, you'd store this in session/cache)
-        bugs_dict = [bug.dict() for bug in bugs]
-        
-        # Return challenge without storing in database (dynamic generation)
-        return ChallengeResponse(
-            id=f"random-{random.randint(1000, 9999)}",
-            title=challenge_title,
-            description=challenge_description,
-            buggy_code=buggy_code,
-            language=selected_language.value,
-            difficulty=selected_difficulty.value,
-            max_score=100,
-            time_limit_minutes=30,
-            tags=[f"{selected_difficulty.value}", f"{selected_language.value}", "random-challenge"],
-            expected_bugs=bugs_dict  # Include for grading
-        )
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to generate random challenge: {str(e)}")

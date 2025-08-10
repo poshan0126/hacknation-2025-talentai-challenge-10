@@ -20,6 +20,10 @@ export default defineConfig({
       '/debug': {
         target: 'http://localhost:8001',
         changeOrigin: true,
+      },
+      '/resume': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
       }
     }
   }
