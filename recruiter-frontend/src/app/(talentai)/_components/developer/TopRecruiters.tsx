@@ -99,7 +99,7 @@ export default function TopRecruiters() {
                 <div className="bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-200 rounded-lg px-3 py-1">
                   <span className="font-bold text-emerald-800 text-sm">{recruiter.recruiter_score}</span>
                 </div>
-                <Link href={`/recruiterprofile`}>
+                <Link href={`/recruiterprofile?role=developer`}>
                   <Button size="sm" variant="outline" className="rounded-lg border-slate-300 hover:bg-slate-50">
                     <Eye className="w-3 h-3 mr-1" />
                     View
