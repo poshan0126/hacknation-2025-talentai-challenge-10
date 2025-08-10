@@ -7,6 +7,9 @@ pydantic-settings>=2.0.0,<3.0.0
 # Groq API client for cloud LLM inference
 groq>=0.4.0,<1.0.0
 
+# PDF processing
+pymupdf4llm>=0.1.0,<1.0.0
+
 # Local LLM support (optional - for running models locally)
 transformers>=4.35.0,<5.0.0
 torch>=2.0.0,<3.0.0

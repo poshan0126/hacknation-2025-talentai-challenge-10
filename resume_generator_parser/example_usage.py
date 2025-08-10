@@ -22,9 +22,9 @@ def main():
     # Initialize the pipeline
     pipeline = CompleteResumePipeline(output_dir, groq_api_key)
     
-    # Run the pipeline with 3 resumes
+    # Run the pipeline with 20 resumes
     print("Starting resume pipeline...")
-    results = pipeline.run_pipeline(count=5)
+    results = pipeline.run_pipeline(count=20)
     
     if results["success"]:
         print("\nPipeline completed successfully!")

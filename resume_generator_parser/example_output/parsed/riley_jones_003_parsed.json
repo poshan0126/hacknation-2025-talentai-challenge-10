@@ -1,6 +1,6 @@
 {
   "filename": "riley_jones_003.md",
-  "parsed_at": "2025-08-10T02:18:54.595757Z",
+  "parsed_at": "2025-08-10T04:07:25.294467Z",
   "data": {
     "name": "Riley Jones",
     "title": "Senior Software Engineer",
@@ -91,7 +91,7 @@
       ]
     }
   },
-  "summary": "Riley Jones is a seasoned Senior Software Engineer with a strong educational background in Software Engineering and Information Systems from City College of North and City College of, respectively. With over 5 years of experience in the industry, Riley has developed a diverse set of technical skills, including proficiency in programming languages such as C++, JavaScript, TypeScript, Go, and Python. He is also well-versed in web development frameworks like Express, Flask, FastAPI, Django, and React, as well as data science tools like scikit-learn, TensorFlow, SQL, PyTorch, and NumPy.\n\nThroughout his career, Riley has demonstrated exceptional achievements, including reducing CPU usage by 20% via asynchronous processing, designing and implementing a model serving layer with Python, and leading teams to deliver payments modules on time. He has also showcased his expertise in cloud and DevOps, with experience in Docker, Azure, GCP, and AWS.\n\nRiley's experience spans multiple roles, including Machine Learning Engineer at CloudLoom, where he led a 5-person team, and Backend Engineer at BluePeak, where he led teams to deliver payments modules on time and reduced CPU usage by 15% via schema optimization.",
+  "summary": "Riley Jones is a seasoned Senior Software Engineer with a strong educational background in Software Engineering and Information Systems. He holds a Bachelor of Science degree in Software Engineering from City College of North and a Master of Science degree in Information Systems from City College of. With over 5 years of experience in the industry, Riley has developed a diverse skill set in programming languages, including C++, JavaScript, TypeScript, Go, and Python. He is also proficient in web development frameworks such as Express, Flask, FastAPI, Django, and React, and has expertise in data analysis and machine learning with tools like scikit-learn, TensorFlow, SQL, PyTorch, and NumPy. Riley has worked with various cloud platforms, including Azure, GCP, and AWS, and has experience with Docker and DevOps. Throughout his career, Riley has demonstrated exceptional leadership skills, having led teams to deliver projects on time and achieving notable achievements such as reducing CPU usage by 20% and migrating legacy VM clusters to Azure with zero downtime.",
   "llm_provider": "groq",
   "llm_model": "llama3-8b-8192"
 }

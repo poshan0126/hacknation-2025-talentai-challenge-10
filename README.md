@@ -18,6 +18,7 @@ Revolutionary AI talent marketplace that matches candidates through **debugging 
 - ✅ **AI Bug Hunt Arena** - Comment on bugs, AI evaluates accuracy
 - ✅ **Anonymous Performance Leaderboard** - Bias-free ranking
 - ✅ **Semantic Job-Candidate Matching** - AI-powered recommendations
+- ✅ **Candidate Recommendation System** - Semantic matching with sentence transformers
 - ✅ **Separate Platforms** - Dedicated candidate & recruiter applications
 - ✅ **Real-time Job Posting Integration** - Instant candidate suggestions
 
@@ -230,6 +231,24 @@ TALENTAI-CHALLENGE-10/
 │       ├── bug_detector.py           # AI analysis of candidate comments
 │       └── solution_scorer.py        # LLM-based solution evaluation
 │
+├── resume_generator_parser/           # Resume Generation & Parsing
+│   ├── __init__.py
+│   ├── models.py                      # Data structures for resumes
+│   ├── resume_generator.py            # AI-powered resume generation
+│   ├── resume_parser.py               # LangChain-based parsing
+│   ├── resume_pipeline.py             # End-to-end pipeline
+│   └── example_usage.py              # Usage examples
+│
+├── candidate_recommendation/          # AI-Powered Candidate Matching
+│   ├── __init__.py                    # Package initialization
+│   ├── models.py                      # Data models for recommendations
+│   ├── semantic_matcher.py            # Sentence transformer-based matching
+│   ├── main.py                        # Demo script with sample jobs
+│   ├── example_usage.py              # Comprehensive usage examples
+│   ├── integration_example.py         # Easy integration examples
+│   ├── requirements.txt               # Python dependencies
+│   └── README.md                      # Detailed system documentation
+│
 └── scripts/                          # Development & Deployment
     ├── setup.sh                      # Local development setup
     ├── deploy.sh                     # Production deployment
@@ -245,9 +264,11 @@ TALENTAI-CHALLENGE-10/
 - **LangGraph** - Multi-agent workflow state management
 - **Ollama / LM Studio** - Local LLM hosting (LLaMA, Mistral)
 - **Chroma / Weaviate** - Local vector database for embeddings
+- **Sentence Transformers** - Semantic text similarity for job-candidate matching
 
 ### Backend Services
 - **FastAPI** - High-performance Python API framework (both backends)
+- **Flask** - Lightweight API framework for candidate recommendation service
 - **Pydantic** - Data validation and type safety
 - **Uvicorn** - ASGI server for local development
 - **SQLite** - Lightweight local database
@@ -295,6 +316,8 @@ cd candidate-frontend && npm install
 cd ../recruiter-frontend && npm install
 cd ../candidate-backend && pip install -r requirements.txt
 cd ../recruiter-backend && pip install -r requirements.txt
+cd ../candidate_recommendation && pip install -r requirements.txt
+cd ../resume_generator_parser && pip install -r requirements.txt
 
 # Initialize local databases
 python scripts/setup_local_db.py
@@ -311,6 +334,13 @@ cd candidate-backend && uvicorn main:app --reload --port 8000
 
 # Terminal 4: Recruiter Backend
 cd recruiter-backend && uvicorn main:app --reload --port 8001
+
+# Terminal 5: Candidate Recommendation API
+cd candidate_recommendation && python main.py --api  # http://localhost:8001
+
+# Terminal 6: Test Candidate Recommendation System
+cd candidate_recommendation && python example_usage.py  # Run comprehensive examples
+cd candidate_recommendation && python integration_example.py  # Test integration
 ```
 
 ## 📊 Core Workflows
@@ -343,6 +373,27 @@ Resume Processing → PII Removal → Skill-Only Evaluation
 → Identity Reveal Only After Shortlisting
 ```
 
+### 5. Candidate Recommendation Flow
+```
+Job Description Input → Semantic Model Encoding → Resume Comparison
+→ Cosine Similarity Scoring → Top 10 Matches → Detailed Match Analysis
+→ Integration with Existing Pipeline → Backend API Access
+```
+
+### 6. AI-Powered Candidate Matching
+```
+Job Posting Creation → AI Analysis of Requirements → Semantic Matching Engine
+→ Sentence Transformer Encoding → Hybrid Scoring (Embedding + Skills) → Top Matches
+→ Detailed Candidate Profiles → Integration with Recruiter Platform
+```
+
+### 6. AI-Powered Candidate Matching
+```
+Job Posting Creation → AI Analysis of Requirements → Semantic Matching Engine
+→ Sentence Transformer Encoding → Hybrid Scoring (Embedding + Skills) → Top Matches
+→ Detailed Candidate Profiles → Integration with Recruiter Platform
+```
+
 ## 🎯 Key Features Implementation
 
 ### Candidate Platform Features
@@ -358,12 +409,16 @@ Resume Processing → PII Removal → Skill-Only Evaluation
 - **Match Recommendations**: AI suggestions for best candidates per job posting
 - **Analytics Dashboard**: Hiring pipeline metrics, bias reports, performance insights
 - **Shortlist Management**: Candidate evaluation, comparison, and PII reveal controls
+- **Instant Candidate Matching**: Real-time AI-powered recommendations when jobs are posted
 
 ### Shared AI Services
 - **LangChain Resume Intelligence**: Local LLM-based skill extraction and profile enrichment
 - **Challenge Validation**: Local AI analysis of bug identification accuracy
 - **LangGraph Matching**: Multi-agent job-candidate compatibility scoring
 - **Bias Detection**: Local fairness monitoring and demographic bias mitigation
+- **Semantic Matching Engine**: Sentence transformer-based job-candidate compatibility scoring
+- **Candidate Recommendation System**: AI-powered semantic matching with hybrid scoring algorithms
+- **Resume Parser Integration**: Seamless integration with existing resume generation and parsing system
 
 ## 📈 Success Metrics
 
@@ -424,5 +479,13 @@ Resume Processing → PII Removal → Skill-Only Evaluation
 - **Shared AI services**: Resume parsing, challenge validation, matching engine
 - **Cross-platform integration**: Real-time updates, data synchronization
 - **Focus**: LLM integration and bias mitigation systems
+
+### Person 4: Candidate Recommendation System
+- **Semantic matching engine**: Sentence transformer-based job-candidate compatibility
+- **Recommendation pipeline**: Integration with existing resume generation system
+- **REST API service**: Flask-based API for backend integration
+- **Focus**: High-accuracy candidate recommendations and system integration
+- **Integration examples**: Easy-to-use service classes and function wrappers
+- **Comprehensive documentation**: Usage examples and troubleshooting guides
 
 This architecture provides complete separation of concerns while enabling seamless integration between candidate and recruiter experiences.

@@ -1,16 +1,16 @@
 {
-  "execution_time": "2025-08-10T02:18:54.599957Z",
+  "execution_time": "2025-08-10T04:07:25.334824Z",
   "pipeline_version": "1.0.0",
   "statistics": {
-    "total_resumes": 3,
-    "successfully_generated": 3,
-    "successfully_parsed": 3,
-    "successfully_summarized": 3,
-    "execution_time_seconds": 2.89,
+    "total_resumes": 20,
+    "successfully_generated": 20,
+    "successfully_parsed": 20,
+    "successfully_summarized": 20,
+    "execution_time_seconds": 108.3,
     "files_created": {
-      "resume_files": 3,
-      "json_files": 3,
-      "summary_files": 3
+      "resume_files": 20,
+      "json_files": 20,
+      "summary_files": 20
     }
   },
   "output_directories": {

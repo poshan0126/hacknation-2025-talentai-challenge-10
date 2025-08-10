@@ -1,6 +1,6 @@
 {
   "filename": "cameron_smith_001.md",
-  "parsed_at": "2025-08-10T02:18:54.592362Z",
+  "parsed_at": "2025-08-10T04:07:25.290721Z",
   "data": {
     "name": "Cameron Smith",
     "title": "Software Engineer",
@@ -88,7 +88,7 @@
       ]
     }
   },
-  "summary": "Cameron Smith is a highly skilled software engineer with a strong background in computer science and data science. He holds a Master's degree in Engineering from State University of North and a Bachelor's degree in Data Science from Tech University of. With over 8 years of experience in the industry, Cameron has worked with various companies, including HyperWeave, CloudLoom, and CodeSpring, where he has held titles such as Backend Engineer, Machine Learning Engineer, and Senior Software Engineer.\n\nThroughout his career, Cameron has demonstrated exceptional technical skills, including proficiency in programming languages such as Python, TypeScript, JavaScript, and Go. He has also shown expertise in web development using FastAPI, Express, and Node.js, as well as data analysis using scikit-learn, NumPy, and Pandas.\n\nCameron's achievements are impressive, with notable accomplishments including building a microservice using Kubernetes, designing and implementing an auth gateway with AWS, and reducing latency by 30% via schema optimization. He has also successfully migrated legacy monoliths to AWS with zero downtime, reduced latency by 20% via asynchronous processing, and led a team to deliver ETL replatform on time.\n\nOverall, Cameron is a highly skilled and experienced software engineer with a strong technical background and a proven track record of delivering high-quality results.",
+  "summary": "Cameron Smith is a seasoned software engineer with a strong background in computer science and data science. He holds a Master's degree in Engineering from State University of North and a Bachelor's degree in Data Science from Tech University of. With over 8 years of experience, Cameron has worked as a Backend Engineer at HyperWeave, Machine Learning Engineer at CloudLoom, and Senior Software Engineer at CodeSpring. His technical skills include proficiency in programming languages such as Python, TypeScript, JavaScript, and Go, as well as experience with web frameworks like FastAPI, Express, and Node.js. Cameron is also skilled in data science tools like scikit-learn, NumPy, and Pandas. His achievements include improving latency by 25% through microservice design, reducing latency by 30% through schema optimization, and migrating legacy monoliths to AWS with zero downtime.",
   "llm_provider": "groq",
   "llm_model": "llama3-8b-8192"
 }
