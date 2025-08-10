@@ -18,10 +18,7 @@ Revolutionary AI talent marketplace that matches candidates through **debugging 
 - ✅ **AI Bug Hunt Arena** - Comment on bugs, AI evaluates accuracy
 - ✅ **Anonymous Performance Leaderboard** - Bias-free ranking
 - ✅ **Semantic Job-Candidate Matching** - AI-powered recommendations
-<<<<<<< HEAD
-=======
 - ✅ **Candidate Recommendation System** - Semantic matching with sentence transformers
->>>>>>> ccf2933a3cd8272e84616ed4151e928d439f4290
 - ✅ **Separate Platforms** - Dedicated candidate & recruiter applications
 - ✅ **Real-time Job Posting Integration** - Instant candidate suggestions
 
