@@ -215,20 +215,6 @@ TALENTAI-CHALLENGE-10/
 │       ├── challenges.ts             # Challenge categories
 │       └── config.ts                 # Shared configuration
 │
-├── challenges/                        # Pre-built Debugging Challenges
-│   ├── ml_bugs/                      # ML/AI specific bug scenarios
-│   │   ├── tensor_shape_bug.py
-│   │   ├── memory_leak_model.py
-│   │   ├── data_preprocessing_bug.py
-│   │   ├── convergence_issue.py
-│   │   └── deployment_bugs.py
-│   ├── templates/
-│   │   ├── challenge_template.json   # Challenge structure format
-│   │   └── solution_template.json    # Expected solution format
-│   └── validators/
-│       ├── __init__.py
-│       ├── bug_detector.py           # AI analysis of candidate comments
-│       └── solution_scorer.py        # LLM-based solution evaluation
 │
 └── scripts/                          # Development & Deployment
     ├── setup.sh                      # Local development setup
