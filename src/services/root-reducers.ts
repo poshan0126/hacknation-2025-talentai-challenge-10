@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-// import platformReducer from './platform/platform-slice';
+import placeholderReducer from './placeholder-slice';
 
 const RootReducer = combineReducers({
-  // platform: platformReducer,
+  placeholder: placeholderReducer,
 });
 
 export default RootReducer;
