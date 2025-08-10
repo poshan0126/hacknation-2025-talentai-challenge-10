@@ -208,3 +208,47 @@ __marimo__/
 
 
 CLAUDE.md
+
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+recruiter-frontend/node_modules
+recruiter-frontend/.pnp
+recruiter-frontend/.pnp.*
+recruiter-frontend/.yarn/*
+recruiter-frontend/.yarn/patches
+recruiter-frontend/.yarn/plugins
+recruiter-frontend/.yarn/releases
+recruiter-frontend/.yarn/versions
+
+# testing
+recruiter-frontend/coverage
+
+# next.js
+recruiter-frontend/.next/
+recruiter-frontend/out/
+
+# production
+recruiter-frontend/build
+
+# misc
+recruiter-frontend/.DS_Store
+recruiter-frontend/*.pem
+
+# debug
+recruiter-frontend/npm-debug.log*
+recruiter-frontend/yarn-debug.log*
+recruiter-frontend/yarn-error.log*
+recruiter-frontend/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+recruiter-frontend/.env*
+
+# vercel
+recruiter-frontend/.vercel
+recruiter-frontend/.vscode/
+
+# typescript
+recruiter-frontend/*.tsbuildinfo
+recruiter-frontend/next-env.d.ts
