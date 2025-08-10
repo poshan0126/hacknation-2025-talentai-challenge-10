@@ -1,0 +1,94 @@
+{
+  "filename": "cameron_smith_001.md",
+  "parsed_at": "2025-08-10T02:18:54.592362Z",
+  "data": {
+    "name": "Cameron Smith",
+    "title": "Software Engineer",
+    "email": "cameron.smith@proton.me",
+    "phone": "(428) 342-2679",
+    "location": "Phoenix, AZ",
+    "education": [
+      {
+        "institution": "State University of North",
+        "degree": "Master of Engineering",
+        "field_of_study": "Computer Science",
+        "year": 2017,
+        "gpa": 3.37,
+        "location": "Phoenix, AZ"
+      },
+      {
+        "institution": "Tech University of",
+        "degree": "Bachelor of Science",
+        "field_of_study": "Data Science",
+        "year": 2016,
+        "gpa": 3.54,
+        "location": "Phoenix, AZ"
+      }
+    ],
+    "experience": [
+      {
+        "company": "HyperWeave",
+        "title": "Backend Engineer",
+        "start": "Mar 2015",
+        "end": "May 2020",
+        "location": "Austin, NY",
+        "highlights": [
+          "Built a microservice using Kubernetes improving latency by 25%",
+          "Designed and implemented auth gateway with AWS",
+          "Reduced latency by 30% via schema optimization"
+        ]
+      },
+      {
+        "company": "CloudLoom",
+        "title": "Machine Learning Engineer",
+        "start": "Dec 2019",
+        "end": "Feb 2024",
+        "location": "Portland, AZ",
+        "highlights": [
+          "Migrated legacy monolith to AWS with zero downtime",
+          "Reduced latency by 20% via asynchronous processing"
+        ]
+      },
+      {
+        "company": "CodeSpring",
+        "title": "Senior Software Engineer",
+        "start": "Mar 2019",
+        "end": "Present",
+        "location": "San Diego, CA",
+        "highlights": [
+          "Migrated legacy monolith to AWS with zero downtime",
+          "Led 3-person team to deliver ETL replatform on time",
+          "Migrated legacy cron farm to AWS with zero downtime"
+        ]
+      }
+    ],
+    "skills": {
+      "Programming": [
+        "Python",
+        "TypeScript",
+        "JavaScript",
+        "Go"
+      ],
+      "Web": [
+        "FastAPI",
+        "Express",
+        "Node.js"
+      ],
+      "Data": [
+        "scikit-learn",
+        "NumPy",
+        "Pandas"
+      ],
+      "Cloud/DevOps": [
+        "Azure",
+        "Docker",
+        "AWS",
+        "Kubernetes",
+        "GCP"
+      ]
+    }
+  },
+  "summary": "Cameron Smith is a highly skilled software engineer with a strong background in computer science and data science. He holds a Master's degree in Engineering from State University of North and a Bachelor's degree in Data Science from Tech University of. With over 8 years of experience in the industry, Cameron has worked with various companies, including HyperWeave, CloudLoom, and CodeSpring, where he has held titles such as Backend Engineer, Machine Learning Engineer, and Senior Software Engineer.\n\nThroughout his career, Cameron has demonstrated exceptional technical skills, including proficiency in programming languages such as Python, TypeScript, JavaScript, and Go. He has also shown expertise in web development using FastAPI, Express, and Node.js, as well as data analysis using scikit-learn, NumPy, and Pandas.\n\nCameron's achievements are impressive, with notable accomplishments including building a microservice using Kubernetes, designing and implementing an auth gateway with AWS, and reducing latency by 30% via schema optimization. He has also successfully migrated legacy monoliths to AWS with zero downtime, reduced latency by 20% via asynchronous processing, and led a team to deliver ETL replatform on time.\n\nOverall, Cameron is a highly skilled and experienced software engineer with a strong technical background and a proven track record of delivering high-quality results.",
+  "llm_provider": "groq",
+  "llm_model": "llama3-8b-8192"
+}
