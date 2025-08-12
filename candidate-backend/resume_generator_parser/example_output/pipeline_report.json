@@ -1,0 +1,26 @@
+{
+  "execution_time": "2025-08-10T02:18:54.599957Z",
+  "pipeline_version": "1.0.0",
+  "statistics": {
+    "total_resumes": 3,
+    "successfully_generated": 3,
+    "successfully_parsed": 3,
+    "successfully_summarized": 3,
+    "execution_time_seconds": 2.89,
+    "files_created": {
+      "resume_files": 3,
+      "json_files": 3,
+      "summary_files": 3
+    }
+  },
+  "output_directories": {
+    "resumes": "example_output/resumes",
+    "parsed_data": "example_output/parsed",
+    "summaries": "example_output/summaries"
+  },
+  "llm_provider": "groq",
+  "available_providers": {
+    "groq": true,
+    "local": true
+  }
+}
