@@ -322,11 +322,8 @@ cd candidate-frontend && npm install
 cd ../recruiter-frontend && npm install
 cd ../candidate-backend && pip install -r requirements.txt
 cd ../recruiter-backend && pip install -r requirements.txt
-<<<<<<< HEAD
-=======
 cd ../candidate_recommendation && pip install -r requirements.txt
 cd ../resume_generator_parser && pip install -r requirements.txt
->>>>>>> ccf2933a3cd8272e84616ed4151e928d439f4290
 
 # Initialize local databases
 python scripts/setup_local_db.py
@@ -352,7 +349,6 @@ cd candidate_recommendation && python main.py --api  # http://localhost:8001
 # Terminal 6: Test Candidate Recommendation System
 cd candidate_recommendation && python example_usage.py  # Run comprehensive examples
 cd candidate_recommendation && python integration_example.py  # Test integration
->>>>>>> ccf2933a3cd8272e84616ed4151e928d439f4290
 ```
 
 ## 📊 Core Workflows
